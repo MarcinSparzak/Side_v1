@@ -37,7 +37,8 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::MoveForwardBackward(float AxisValue)
 {
-	AddMovementInput(GetActorForwardVector() * AxisValue);
+	//AddMovementInput(GetActorForwardVector() * AxisValue);
+	AddMovementInput(FVector(0.0f, 1.0f, 0.0f), AxisValue);
 }
 //
 //void ABaseCharacter::LookUpDownMouse(float AxisValue)
