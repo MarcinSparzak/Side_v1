@@ -2,12 +2,19 @@
 
 
 #include "BaseCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	UCharacterMovementComponent* MovementComp = GetCharacterMovement();
+	MovementComp->bOrientRotationToMovement = true;
+	MovementComp->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	MovementComp->SetPlaneConstraintEnabled(true);
+	MovementComp->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::X);
 
 }
 
