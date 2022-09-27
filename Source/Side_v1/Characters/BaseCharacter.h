@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
-
+class AWeaponBase;
 UCLASS()
 class SIDE_V1_API ABaseCharacter : public ACharacter
 {
@@ -28,5 +28,15 @@ public:
 
 private:
 	void MoveForwardBackward(float AxisValue);
+	void PullTrigger();
+	void Attack();
 	//void LookUpDownMouse(float AxisValue);
+	UPROPERTY()
+		AWeaponBase* Weapon;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AWeaponBase> WeaponClass;
+
+
+
 };

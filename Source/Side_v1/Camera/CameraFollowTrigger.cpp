@@ -3,7 +3,7 @@
 
 #include "CameraFollowTrigger.h"
 #include "Components/BoxComponent.h"
-#include "BaseCharacter.h"
+#include "../Characters/BaseCharacter.h"
 #include "CameraManager.h"
 
 ACameraFollowTrigger::ACameraFollowTrigger()

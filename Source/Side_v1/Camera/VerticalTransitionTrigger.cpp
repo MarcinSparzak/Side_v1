@@ -3,7 +3,7 @@
 
 #include "VerticalTransitionTrigger.h"
 #include "Components/BoxComponent.h"
-#include "BaseCharacter.h"
+#include "../Characters/BaseCharacter.h"
 #include "CameraManager.h"
 
 // Sets default values

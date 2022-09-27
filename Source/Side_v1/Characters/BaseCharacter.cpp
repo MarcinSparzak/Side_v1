@@ -3,6 +3,9 @@
 
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BaseCharacterController.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Props/Weapons/WeaponBase.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -22,7 +25,23 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (WeaponClass != nullptr)
+	{
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		if (Weapon != nullptr)
+		{
+			Weapon->SetOwner(this);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
+		}
+	}
+	else {
+			UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
+
+	}
 }
 
 // Called every frame
@@ -40,12 +59,21 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("Move Forward / Backward"), this, &ABaseCharacter::MoveForwardBackward);
 	PlayerInputComponent->BindAxis(TEXT("Look Up / Down Mouse"), this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ABaseCharacter::Attack);
 }
 
 void ABaseCharacter::MoveForwardBackward(float AxisValue)
 {
 	//AddMovementInput(GetActorForwardVector() * AxisValue);
 	AddMovementInput(FVector(0.0f, 1.0f, 0.0f), AxisValue);
+}
+void ABaseCharacter::PullTrigger()
+{
+	ABaseCharacterController* PlayerController = Cast<ABaseCharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+}
+void ABaseCharacter::Attack()
+{
+	Weapon->Attack();
 }
 //
 //void ABaseCharacter::LookUpDownMouse(float AxisValue)
