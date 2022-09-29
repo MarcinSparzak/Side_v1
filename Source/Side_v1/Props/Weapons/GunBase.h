@@ -20,8 +20,6 @@ public:
 	virtual void Attack() override;
 
 private:
-	UPROPERTY(EditDefaultsOnly)
-	int MouseDistanceFromPlane = 2000;
 
 	UPROPERTY(EditAnywhere)
 	bool DebugMode;

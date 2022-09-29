@@ -13,7 +13,7 @@ void ABaseCharacterController::Tick(float DeltaTime)
 	ACharacter* CharacterObject = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (CharacterObject != nullptr)
 	{
-		float tmpRotation;
+		/*float tmpRotation;
 		FVector MouseLocation;
 		FVector MouseRotation;
 
@@ -22,7 +22,7 @@ void ABaseCharacterController::Tick(float DeltaTime)
 		FVector ActorLocation = CharacterObject->GetActorLocation();
 
 		tmpRotation = ActorLocation.Y >= MouseLocation.Y ? -90.0f : 90.0f;
-		CharacterObject->SetActorRotation(FRotator(0, tmpRotation, 0));
+		CharacterObject->SetActorRotation(FRotator(0, tmpRotation, 0));*/
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("No Character"));

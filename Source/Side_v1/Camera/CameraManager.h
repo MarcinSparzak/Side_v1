@@ -30,6 +30,9 @@ public:
 	void SetCameraStationary(bool NewValue, FVector PointToCenter);
 	FVector CenterCameraAtVector(float DeltaTime);
 
+	UPROPERTY(EditDefaultsOnly)
+	float SpringArmLength;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 		USpringArmComponent* SpringArm;

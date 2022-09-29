@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
-class AWeaponBase;
+class ACameraManager; class AWeaponBase; class ABaseCharacterController; class UCameraComponent;
 UCLASS()
 class SIDE_V1_API ABaseCharacter : public ACharacter
 {
@@ -26,17 +26,23 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+	FVector MouseIntersection;
 private:
+	// Axis and action functions
 	void MoveForwardBackward(float AxisValue);
 	void PullTrigger();
 	void Attack();
-	//void LookUpDownMouse(float AxisValue);
+	
+	// Setting up weapons for character to be equiped with default weapon
 	UPROPERTY()
-		AWeaponBase* Weapon;
-
+	AWeaponBase* Weapon;
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<AWeaponBase> WeaponClass;
+	TSubclassOf<AWeaponBase> WeaponClass;
 
-
-
+	// Helper for character rotation TODO move to player character
+	ACameraManager* CameraManager;
+	ABaseCharacterController* PlayerController;
+	UCameraComponent* CameraObj;
+	void RotateCharacter();
 };
