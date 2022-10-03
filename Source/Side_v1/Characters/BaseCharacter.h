@@ -10,7 +10,6 @@ UCLASS()
 class SIDE_V1_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
@@ -26,12 +25,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	FVector MouseIntersection;
 private:
+	//
+	float Health;
+
+	UPROPERTY(EditAnywhere)
+	float MaxHealth;
+
 	// Axis and action functions
 	void MoveForwardBackward(float AxisValue);
-	void PullTrigger();
 	void Attack();
 	
 	// Setting up weapons for character to be equiped with default weapon
@@ -39,10 +44,4 @@ private:
 	AWeaponBase* Weapon;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeaponBase> WeaponClass;
-
-	// Helper for character rotation TODO move to player character
-	ACameraManager* CameraManager;
-	ABaseCharacterController* PlayerController;
-	UCameraComponent* CameraObj;
-	void RotateCharacter();
 };
