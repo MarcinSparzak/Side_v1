@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Props/Weapons/WeaponBase.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -68,10 +69,31 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float DamageApplied = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	
+	UE_LOG(LogTemp, Warning, TEXT("Actor takes damage: %f"), DamageToApply);
 
-	UE_LOG(LogTemp, Warning, TEXT("Actor takes damage: %f"), DamageApplied);
-	return DamageApplied;
+	float tmpHealth = Health;
+	float damageApplied = 0.0f;
+	if (DamageToApply > Health)
+	{
+		Health = 0;
+		damageApplied = DamageToApply - tmpHealth;
+		UE_LOG(LogTemp, Warning, TEXT("Character is killed"), DamageToApply);
+		Death();
+	}
+	else
+	{
+		Health -= DamageToApply;
+		damageApplied = DamageToApply;
+		UE_LOG(LogTemp, Warning, TEXT("Actor life: %f"), Health);
+	}
+	return damageApplied;
+}
+
+bool ABaseCharacter::IsDead()
+{
+	return Health <=0 ? true : false;
 }
 
 
@@ -83,6 +105,14 @@ void ABaseCharacter::MoveForwardBackward(float AxisValue)
 void ABaseCharacter::Attack()
 {
 	Weapon->Attack();
+}
+
+void ABaseCharacter::Death()
+{
+
+	DetachFromControllerPendingDestroy();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 

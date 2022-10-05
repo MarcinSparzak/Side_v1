@@ -45,6 +45,7 @@ void AGunBase::Attack()
 			
 				AController* OwnerController = GetOwnerController();
 				if (OwnerController == nullptr) return;
+				
 				float Damage = Victim->TakeDamage(BaseDamage, DamageEvent, OwnerController, this);
 			}
 		}

@@ -28,6 +28,8 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	FVector MouseIntersection;
+
+	bool IsDead();
 private:
 	//
 	float Health;
@@ -44,4 +46,6 @@ private:
 	AWeaponBase* Weapon;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeaponBase> WeaponClass;
+
+	virtual void Death();
 };
