@@ -3,3 +3,7 @@
 
 #include "BaseEnemyCharacter.h"
 
+ABaseEnemyCharacter::ABaseEnemyCharacter()
+{
+	
+}
