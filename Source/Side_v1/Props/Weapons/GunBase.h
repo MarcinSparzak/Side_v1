@@ -25,7 +25,7 @@ private:
 	bool DebugMode;
 
 	UPROPERTY(EditAnywhere)
-		float BaseDamage;
+	float BaseDamage;
 
 	AController* GetOwnerController();
 };

@@ -33,3 +33,8 @@ void AWeaponBase::Attack()
 	UE_LOG(LogTemp, Warning, TEXT("WeaponBase::Attack"));
 }
 
+float AWeaponBase::GetWeaponRange()
+{
+	return WeaponRange;
+}
+

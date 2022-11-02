@@ -18,6 +18,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Axis and action functions
+	virtual void Attack();
+
+
+	virtual void Death();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -25,6 +31,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void MoveForwardBackward(float AxisValue);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	FVector MouseIntersection;
@@ -35,17 +42,7 @@ private:
 	float Health;
 
 	UPROPERTY(EditAnywhere)
-	float MaxHealth;
+	float MaxHealth = 100;
 
-	// Axis and action functions
-	void MoveForwardBackward(float AxisValue);
-	void Attack();
 	
-	// Setting up weapons for character to be equiped with default weapon
-	UPROPERTY()
-	AWeaponBase* Weapon;
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AWeaponBase> WeaponClass;
-
-	virtual void Death();
 };

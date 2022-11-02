@@ -18,6 +18,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void Attack() override;
+
+	// Setting up weapons for character to be equiped with default weapon
+	UPROPERTY()
+		AWeaponBase* Weapon;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AWeaponBase> WeaponClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,4 +40,6 @@ private:
 	ABaseCharacterController* PlayerController;
 	UCameraComponent* CameraObj;
 	void RotateCharacter();
+
+
 };

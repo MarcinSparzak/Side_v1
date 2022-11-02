@@ -28,25 +28,7 @@ void ABaseCharacter::BeginPlay()
 
 	Health = MaxHealth;
 
-	/*
-		Equip Default weapon
-	*/
-	if (WeaponClass != nullptr)
-	{
-		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-		if (Weapon != nullptr)
-		{
-			Weapon->SetOwner(this);
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
-		}
-	}
-	else {
-			UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
-
-	}
+	
 
 }
 
@@ -104,7 +86,7 @@ void ABaseCharacter::MoveForwardBackward(float AxisValue)
 }
 void ABaseCharacter::Attack()
 {
-	Weapon->Attack();
+	UE_LOG(LogTemp, Warning, TEXT("Base Character Attack"));
 }
 
 void ABaseCharacter::Death()

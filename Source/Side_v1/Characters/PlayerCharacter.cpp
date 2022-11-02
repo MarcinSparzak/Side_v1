@@ -6,11 +6,14 @@
 #include "../Camera/CameraManager.h"
 #include "Camera/CameraComponent.h"
 #include "BaseCharacterController.h"
+#include "../Props/Weapons/WeaponBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//SetGenericTeamId(FGenericTeamId(1));
 
 	/*
 		Set up Variables for character rotation 
@@ -25,6 +28,21 @@ void APlayerCharacter::Tick(float DeltaTime)
 	RotateCharacter();
 }
 
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis(TEXT("Move Forward / Backward"), this, &ABaseCharacter::MoveForwardBackward);
+	PlayerInputComponent->BindAxis(TEXT("Look Up / Down Mouse"), this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Attack);
+}
+
+void APlayerCharacter::Attack()
+{
+	Weapon->Attack();
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -35,6 +53,26 @@ void APlayerCharacter::BeginPlay()
 	PlayerController = Cast<ABaseCharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	CameraObj = Cast<UCameraComponent>(CameraManager->GetComponentByClass(UCameraComponent::StaticClass()));
 
+
+	/*
+		Equip Default weapon
+	*/
+	if (WeaponClass != nullptr)
+	{
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		if (Weapon != nullptr)
+		{
+			Weapon->SetOwner(this);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
+
+	}
 }
 
 void APlayerCharacter::RotateCharacter()

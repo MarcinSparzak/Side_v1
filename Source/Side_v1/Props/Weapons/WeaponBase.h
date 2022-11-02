@@ -27,4 +27,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Attack();
+
+	virtual float GetWeaponRange();
+
+private:
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Weapon Details"))
+	float WeaponRange;
 };

@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "BaseEnemyAIController.generated.h"
+
 class ABaseEnemyCharacter;
 /**
  * 
@@ -15,8 +17,17 @@ class SIDE_V1_API ABaseEnemyAIController : public AAIController
 	GENERATED_BODY()
 
 public:
+
+	ABaseEnemyAIController();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void UpdateCharacterWeaponAI(float WeaponRange);
+
+	UPROPERTY(VisibleAnywhere, Category = AI)
+		TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent = nullptr;
+	TObjectPtr<class UAISenseConfig_Sight> AISenseConfigSight = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,4 +39,11 @@ private:
 		UBehaviorTree* AIBehaviorTree;
 
 	ABaseEnemyCharacter* EnemyCharacter;
+
+	void SetupBlackboard();
+	void SetupAIPerception();
+	void UpdateSightRadius();
+
+	UFUNCTION()
+	void OnTargetPerceptionUpdatedDelegate(AActor* Actor, FAIStimulus Stimulus);
 };
