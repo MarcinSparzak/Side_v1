@@ -114,15 +114,13 @@ void ABaseEnemyAIController::OnTargetPerceptionUpdatedDelegate(AActor* Actor, FA
 		UE_LOG(LogTemp, Warning, TEXT("Target in sight"));
 		AIBlackboard->SetValueAsVector(TEXT("PlayerLocation"), Actor->GetActorLocation());
 		AIBlackboard->SetValueAsObject(TEXT("Player"), Target);
-
-		AWeaponBase* Weapon = EnemyCharacter->GetWeapon();
-		AIBlackboard->SetValueAsFloat(TEXT("WeaponRange"), Weapon->GetWeaponRange());
+		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), true);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Target out of sight"));
 		AIBlackboard->ClearValue(TEXT("PlayerLocation"));
 		AIBlackboard->ClearValue(TEXT("Player"));
-		AIBlackboard->ClearValue(TEXT("WeaponRange"));
+		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), false);
 	}
 }
 
@@ -140,8 +138,6 @@ void ABaseEnemyAIController::SetupAIPerception()
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
 	//AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseEnemyAIController::OnTargetPerceptionUpdatedDelegate);
 	AIPerceptionComponent->ConfigureSense(*AISenseConfigSight);
-	
-
 
 	SetGenericTeamId(FGenericTeamId(2));
 }

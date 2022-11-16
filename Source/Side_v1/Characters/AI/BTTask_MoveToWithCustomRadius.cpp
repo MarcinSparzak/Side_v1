@@ -21,13 +21,13 @@ EBTNodeResult::Type UBTTask_MoveToWithCustomRadius::ExecuteTask(UBehaviorTreeCom
 		return EBTNodeResult::Failed;
 	}
 
-	AcceptableRadius = Blackboard->GetValueAsFloat(TEXT("WeaponRange"));
-	//EBTNodeResult::Type NodeResult = EBTNodeResult::InProgress;
-
-	UE_LOG(LogTemp, Warning, TEXT("Execute Moving"));
+	AcceptableRadius = Blackboard->GetValueAsFloat(TEXT("WeaponRange"))-100;
 	EBTNodeResult::Type NodeResult = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	UE_LOG(LogTemp, Warning, TEXT("Node Result %s"), *UEnum::GetValueAsString(NodeResult));
+	if (NodeResult == EBTNodeResult::Failed) {
+		UE_LOG(LogTemp, Warning, TEXT("Node Result %s"), *UEnum::GetValueAsString(NodeResult));
+		Blackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), false);
+	}
 
 	return NodeResult;
 }

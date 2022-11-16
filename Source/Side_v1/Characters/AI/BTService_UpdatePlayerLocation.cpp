@@ -3,7 +3,13 @@
 
 #include "BTService_UpdatePlayerLocation.h"
 #include "../PlayerCharacter.h"
+#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+
+UBTService_UpdatePlayerLocation::UBTService_UpdatePlayerLocation()
+{
+	NodeName = "Update Player Location";
+}
 
 void UBTService_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -24,5 +30,23 @@ void UBTService_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp
 	FVector TargetLocation = Target->GetActorLocation();
 	UE_LOG(LogTemp, Warning, TEXT("Player Location Updated"));
 	AIBlackboard->SetValueAsVector(TEXT("PlayerLocation"), TargetLocation);
+	AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), true);
 
+
+	/*
+		Establish if player is in range of attack
+	*/
+	FVector OwnerLocation = OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
+	float Distance = FVector::Dist(OwnerLocation, TargetLocation);
+	UE_LOG(LogTemp, Warning, TEXT("Distance %f"), Distance);
+	if (Distance >= AIBlackboard->GetValueAsFloat(TEXT("WeaponRange")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Out of Range"));
+		AIBlackboard->SetValueAsBool(TEXT("IsPlayerInAttackRange"), false);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player in Range"));
+		AIBlackboard->SetValueAsBool(TEXT("IsPlayerInAttackRange"), true);
+	}
 }
