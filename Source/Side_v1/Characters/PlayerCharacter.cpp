@@ -40,7 +40,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Attack()
 {
-	Weapon->Attack();
+	Weapon->Attack(MouseIntersection);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -60,7 +60,7 @@ void APlayerCharacter::BeginPlay()
 	if (WeaponClass != nullptr)
 	{
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 		if (Weapon != nullptr)
 		{
 			Weapon->SetOwner(this);

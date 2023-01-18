@@ -28,7 +28,7 @@ void AWeaponBase::Tick(float DeltaTime)
 
 }
 
-void AWeaponBase::Attack()
+void AWeaponBase::Attack(FVector TargetPoint)
 {
 	UE_LOG(LogTemp, Warning, TEXT("WeaponBase::Attack"));
 }

@@ -41,7 +41,7 @@ public:
 	AWeaponBase* GetWeapon();
 
 	UFUNCTION()
-	void Attack();
+	void Attack(FVector TargetPoint);
 
 protected:
 	virtual void BeginPlay() override;

@@ -28,7 +28,7 @@ void UBTService_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp
 	}
 
 	FVector TargetLocation = Target->GetActorLocation();
-	UE_LOG(LogTemp, Warning, TEXT("Player Location Updated"));
+	//UE_LOG(LogTemp, Warning, TEXT("Player Location Updated"));
 	AIBlackboard->SetValueAsVector(TEXT("PlayerLocation"), TargetLocation);
 	AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), true);
 
@@ -38,15 +38,15 @@ void UBTService_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp
 	*/
 	FVector OwnerLocation = OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
 	float Distance = FVector::Dist(OwnerLocation, TargetLocation);
-	UE_LOG(LogTemp, Warning, TEXT("Distance %f"), Distance);
+	//UE_LOG(LogTemp, Warning, TEXT("Distance %f"), Distance);
 	if (Distance >= AIBlackboard->GetValueAsFloat(TEXT("WeaponRange")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Out of Range"));
+		//UE_LOG(LogTemp, Warning, TEXT("Player Out of Range"));
 		AIBlackboard->SetValueAsBool(TEXT("IsPlayerInAttackRange"), false);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player in Range"));
+		//UE_LOG(LogTemp, Warning, TEXT("Player in Range"));
 		AIBlackboard->SetValueAsBool(TEXT("IsPlayerInAttackRange"), true);
 	}
 }

@@ -17,7 +17,7 @@ class SIDE_V1_API AGunBase : public AWeaponBase
 public:
 	AGunBase();
 
-	virtual void Attack() override;
+	virtual void Attack(FVector TargetPoint) override;
 
 private:
 

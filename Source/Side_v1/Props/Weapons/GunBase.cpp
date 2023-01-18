@@ -11,17 +11,20 @@ AGunBase::AGunBase()
 {
 }
 
-void AGunBase::Attack()
+void AGunBase::Attack(FVector TargetPoint)
 {	
 	ABaseCharacter* Player = Cast<ABaseCharacter>(GetOwner());
 	if (Player != nullptr) 
 	{
 		FVector GunLocation = GetActorLocation();
 
-		FVector ShotDirection = UKismetMathLibrary::GetDirectionUnitVector(GunLocation, Player->MouseIntersection);
+		FVector ShotDirection = UKismetMathLibrary::GetDirectionUnitVector(GunLocation, TargetPoint);
 		int GunRange = 1000;
 
 		FVector EndPointOfGunRange = ShotDirection * GunRange + GunLocation;
+
+		UE_LOG(LogTemp, Warning, TEXT("ShotDirection %s"), *ShotDirection.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("EndPoint %s"), *EndPointOfGunRange.ToString());
 	/*	AActor* TmpChar = GetOwner();
 		if (TmpChar != nullptr)
 		{
@@ -53,8 +56,8 @@ void AGunBase::Attack()
 		//TODELETE after development stage
 		if (DebugMode)
 		{
-			DrawDebugLine(GetWorld(), GunLocation, EndPointOfGunRange, FColor::Red, false, 10.0f, 0, 2.0f);
-			DrawDebugBox(GetWorld(), HitResult.ImpactPoint, FVector(5.0f), FColor::Red, false, 10.0f, 0, 2.0f);
+			DrawDebugLine(GetWorld(), GunLocation, EndPointOfGunRange, FColor::Red, false, 1.0f, 0, 2.0f);
+			DrawDebugBox(GetWorld(), HitResult.ImpactPoint, FVector(5.0f), FColor::Red, false, 1.0f, 0, 2.0f);
 		}
 	}
 }

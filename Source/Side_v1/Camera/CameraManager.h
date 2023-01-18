@@ -24,10 +24,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCameraZValue(float ZValue);
-	FVector FollowPlayerMovement(float DeltaTime);
+	FVector FollowPlayerMovement(float DeltaTime, ACharacter* Player);
 	void SetIsFollowingY(bool NewValue);
 	void SetIsFollowingZ(bool NewValue);
+	/*
+	* Funkcja ustalaj¹ca czy kamera powinna byæ stacjonarna czy dynamicznie œledziæ postaæ
+	*/
 	void SetCameraStationary(bool NewValue, FVector PointToCenter);
+	/*
+	* Funkcja wyznaczaj¹ca now¹ lokalizacjê kamery podczas wycentrowywania jej wyznaczonym miejscu.
+	* Funkcja mysi byæ wywo³ywana w TICK, a nie w SetCameraStationary, poniewa¿ musi byæ wykonywana w przedziale czau.
+	*/
 	FVector CenterCameraAtVector(float DeltaTime);
 
 	UPROPERTY(EditDefaultsOnly)
@@ -45,6 +52,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 		float InterpSpeed;
+
+	UFUNCTION()
+		void DelayTimerCallback();
 
 	bool IsFollowingY = true;
 	bool IsFollowingZ = false;

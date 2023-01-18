@@ -14,11 +14,11 @@ ACameraFollowTrigger::ACameraFollowTrigger()
 
 	VectorForCameraToCenter = CreateDefaultSubobject<USceneComponent>("Vector For Camera to Center");
 	VectorForCameraToCenter->SetupAttachment(RootComponent);
-
-
-
 }
 
+/*
+* Funkcja uruchamiana gdy postaæ wejdzie w pole komponentu
+*/
 void ACameraFollowTrigger::OverlapTriggerBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
@@ -30,6 +30,9 @@ void ACameraFollowTrigger::OverlapTriggerBegin(AActor* OverlappedActor, AActor* 
 	}
 }
 
+/*
+* Funkcja uruchamiana gdy postaæ wyjdzie poza pole komponentu
+*/
 void ACameraFollowTrigger::OverlapTriggerEnd(AActor* OverlappedActor, AActor* OtherActor)
 {
 	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
@@ -40,6 +43,9 @@ void ACameraFollowTrigger::OverlapTriggerEnd(AActor* OverlappedActor, AActor* Ot
 	}
 }
 
+/*
+* Funkcja przesy³aj¹ca do obiektu kamery informacje o koniecznoœci aktualizacji jej zachowania
+*/
 void ACameraFollowTrigger::UpdateCameraManager(bool IsStationary, bool IsFollowingY, FVector VectorToCenter)
 {
 	CameraManager->SetIsFollowingY(IsFollowingY);

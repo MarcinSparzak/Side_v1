@@ -21,7 +21,7 @@ void ABaseEnemyCharacter::BeginPlay()
 	if (WeaponClass != nullptr)
 	{
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 		if (Weapon != nullptr)
 		{
 			Weapon->SetOwner(this);
@@ -52,7 +52,8 @@ AWeaponBase* ABaseEnemyCharacter::GetWeapon()
 	return Weapon;
 }
 
-void ABaseEnemyCharacter::Attack()
+void ABaseEnemyCharacter::Attack(FVector TargetPoint)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Perform Attack"));
+	Weapon->Attack(TargetPoint);
+	UE_LOG(LogTemp, Warning, TEXT("Perform Attack %s"), *TargetPoint.ToString());
 }
