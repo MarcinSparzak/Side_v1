@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Characters/PlayerCharacter.h"
 #include "CameraManager.generated.h"
+
 class USpringArmComponent; class UCameraComponent;
 UCLASS()
 class SIDE_V1_API ACameraManager : public AActor
@@ -24,7 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCameraZValue(float ZValue);
-	FVector FollowPlayerMovement(float DeltaTime, ACharacter* Player);
+	FVector FollowPlayerMovement(float DeltaTime, APlayerCharacter* Player);
 	void SetIsFollowingY(bool NewValue);
 	void SetIsFollowingZ(bool NewValue);
 	/*
@@ -39,6 +41,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float SpringArmLength;
+
+	/*
+		Ustawianie kamery podczas rozpoczêcia poziomu
+		Po zakoñczeniu animacji kamera zaczyna siê zachowywaæ normalnie
+	*/
+	UPROPERTY()
+		bool isPlayingIntro = true;
+
+	UFUNCTION(BlueprintCallable)
+		void SetIsPlayingIntro(bool newValue);
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -57,9 +69,12 @@ private:
 		void DelayTimerCallback();
 
 	bool IsFollowingY = true;
-	bool IsFollowingZ = false;
+	bool IsFollowingZ = true;
 	bool IsCameraStationary = false;
 	FVector LocationToCenter;
-	float CameraZValue = 120.0f;
+	float CameraZValue = 250.0f;
+
+	UPROPERTY(EditAnywhere)
+		float CameraYOffest = 100.0f;
 
 };

@@ -50,7 +50,7 @@ void AVerticalTransitionTrigger::SetCameraZValue(float ZValue)
 
 void AVerticalTransitionTrigger::OnTopOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Top Overlap"));
@@ -61,7 +61,7 @@ void AVerticalTransitionTrigger::OnTopOverlapBegin(UPrimitiveComponent* Overlapp
 
 void AVerticalTransitionTrigger::OnMiddleOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Middle Overlap"));
@@ -71,7 +71,7 @@ void AVerticalTransitionTrigger::OnMiddleOverlapBegin(UPrimitiveComponent* Overl
 
 void AVerticalTransitionTrigger::OnBottomOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bottom Overlap"));

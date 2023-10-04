@@ -30,7 +30,7 @@ public:
 
 	virtual float GetWeaponRange();
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, meta = (Category = "Weapon Details"))
 	float WeaponRange;
 };

@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/Character.h"
+#include "../Characters/PlayerCharacter.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -33,11 +34,12 @@ void ACameraManager::BeginPlay()
 	PlayerController->SetViewTarget(this);
 
 
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	// Place camera at the players location
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	
 	FVector PlayerLoction = Player->GetActorLocation();
-	//this->SetActorLocation(FVector(- 1200, PlayerLoction.Y, PlayerLoction.Z + CameraZValue));
-	SpringArm->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z + CameraZValue));
-	Camera->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z + CameraZValue));
+	SpringArm->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z - 250));
+	Camera->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z - 250));
 
 
 	FTimerHandle DelayTimerHandle;
@@ -47,29 +49,22 @@ void ACameraManager::BeginPlay()
 // Called every frame
 void ACameraManager::Tick(float DeltaTime)
 {
+	if (!isPlayingIntro)
 	Super::Tick(DeltaTime);
-	//if (SpringArm->bEnableCameraLag != true) {
-	//	SpringArm->bEnableCameraLag = true;
-	//};
-
-	if (IsCameraStationary)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Stationary"));
-		FVector TmpVector = CenterCameraAtVector(DeltaTime);
-		SpringArm->SetWorldLocation(TmpVector);
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Dynamic"));
-		float y = IsFollowingY ? 1 : 0;
-		float z = IsFollowingZ ? 1 : 0;
-		PlanesToFollow.Set(0, y, z);
-
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
-		if (Player != nullptr)
+		if (IsCameraStationary)
 		{
-			FVector TmpVector = FollowPlayerMovement(DeltaTime, Player);
+			FVector TmpVector = CenterCameraAtVector(DeltaTime);
 			SpringArm->SetWorldLocation(TmpVector);
+		}
+		else
+		{
+			APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+			if (Player != nullptr)
+			{
+				FVector TmpVector = FollowPlayerMovement(DeltaTime, Player);
+				SpringArm->SetWorldLocation(TmpVector);
+			}
 		}
 	}
 }
@@ -80,33 +75,45 @@ void ACameraManager::SetCameraZValue(float ZValue)
 	SpringArm->SetWorldLocation(FVector(SpringArmVector.X, SpringArmVector.Y, ZValue));
 }
 
-FVector ACameraManager::FollowPlayerMovement(float DeltaTime, ACharacter* Player)
+FVector ACameraManager::FollowPlayerMovement(float DeltaTime, APlayerCharacter* Player)
 {
 	FVector SpringArmLocation = SpringArm->GetComponentLocation();
 
-	// Get Player location on planes that we follow
-	FVector PlayerVector = Player->GetActorLocation() * PlanesToFollow;
+	// Vector on planes that we follow
+	FVector PlayerVector = (Player->GetActorLocation() + FVector(0, 0, CameraZValue)) * PlanesToFollow;
+	// Using YOffest so that camera is always ahead of character 
+	float YOffset = Player->DirectionY * CameraYOffest;
 
-	// Get SpringArm on planes that we don't follow
+	// Vector on planes that we don't follow
 	FVector SpringArmVector = (FVector(1, 1, 1) - PlanesToFollow) * SpringArmLocation;
+	SpringArmVector += FVector(0, YOffset, 0);
 
+
+	//UE_LOG(LogTemp, Warning, TEXT("TmpPlayerVector %s"), *PlayerVector.ToString());
 	FVector Result = FMath::VInterpTo(SpringArmLocation, PlayerVector + SpringArmVector, DeltaTime, InterpSpeed);
-
 	return Result;
 }
 
 void ACameraManager::SetIsFollowingY(bool NewValue)
 {
 	IsFollowingY = NewValue;
+
+	float y = IsFollowingY ? 1 : 0;
+	float z = IsFollowingZ ? 1 : 0;
+	PlanesToFollow.Set(0, y, z);
 }
 
 void ACameraManager::SetIsFollowingZ(bool NewValue)
 {
 	IsFollowingZ = NewValue;
+
+	float y = IsFollowingY ? 1 : 0;
+	float z = IsFollowingZ ? 1 : 0;
+	PlanesToFollow.Set(0, y, z);
 }
 
 /*
-* Funkcja ustalaj¹ca czy kamera powinna byæ stacjonarna czy dynamicznie œledziæ postaæ
+* Set if camera should be stationary
 */
 void ACameraManager::SetCameraStationary(bool NewValue, FVector PointToCenter)
 {
@@ -115,8 +122,8 @@ void ACameraManager::SetCameraStationary(bool NewValue, FVector PointToCenter)
 }
 
 /*
-* Funkcja wyznaczaj¹ca now¹ lokalizacjê kamery podczas wycentrowywania jej wyznaczonym miejscu.
-* Funkcja mysi byæ wywo³ywana w TICK, a nie w SetCameraStationary, poniewa¿ musi byæ wykonywana w przedziale czau.
+* Set new camera location durring centering it on LocationToCenter
+* Function has to be called in Tick because it works over a period of time
 */
 FVector ACameraManager::CenterCameraAtVector(float DeltaTime)
 {
@@ -125,6 +132,11 @@ FVector ACameraManager::CenterCameraAtVector(float DeltaTime)
 	FVector Result = FMath::VInterpTo(SpringArmLocation, FVector(SpringArmLocation.X, TmpVector.Y, SpringArmLocation.Z), DeltaTime, InterpSpeed);
 
 	return Result;
+}
+
+void ACameraManager::SetIsPlayingIntro(bool newValue)
+{
+	isPlayingIntro = newValue;
 }
 
 void ACameraManager::DelayTimerCallback()

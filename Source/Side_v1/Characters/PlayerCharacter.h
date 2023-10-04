@@ -9,6 +9,7 @@
 /**
  * 
  */
+class AGunBase;
 UCLASS()
 class SIDE_V1_API APlayerCharacter : public ABaseCharacter
 {
@@ -22,24 +23,54 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void Attack() override;
+	// Initiate player attack
+	void Attack();
 
-	// Setting up weapons for character to be equiped with default weapon
-	UPROPERTY()
-		AWeaponBase* Weapon;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<AWeaponBase> WeaponClass;
+	// Initiate player death
+	virtual void Death() override;
+
+	// Gun object in right hand
+	AGunBase* RightHandWeapon;
+	// Gun object in left hand
+	AGunBase* LeftHandWeapon;
+
+	// Class of a weapon to spawn in character right hand
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Player|Weapon"))
+		TSubclassOf<AGunBase> RightWeaponClass;
+	// Class of a weapon to spawn in character left hand
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Player|Weapon"));
+		TSubclassOf<AGunBase> LeftWeaponClass;
+
+
+	UPROPERTY(BlueprintReadOnly)
+		float DirectionY;
+
+	// Boolean to 
+	UPROPERTY(BlueprintReadWrite)
+	bool shootRightGun = true;
+
+	// Vector of mouse localization on players X plane
+	UPROPERTY(BlueprintReadOnly)
+		FVector MouseIntersection;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool IsAiming;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-	// Helper for character rotation TODO move to player character
 	ACameraManager* CameraManager;
 	ABaseCharacterController* PlayerController;
 	UCameraComponent* CameraObj;
+
+	// Change Character rotation based on mouse cursor placement
 	void RotateCharacter();
 
+	// Set FVector MouseIntersection
+	void SetMouseIntersection();
 
+	// Create actors according to Weapon classes
+	void SpawnWeapons();
 };

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
-class ACameraManager; class AWeaponBase; class ABaseCharacterController; class UCameraComponent;
+class ACameraManager;  class ABaseCharacterController; class UCameraComponent;
 UCLASS()
 class SIDE_V1_API ABaseCharacter : public ACharacter
 {
@@ -17,10 +17,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// Axis and action functions
-	virtual void Attack();
-
 
 	virtual void Death();
 
@@ -34,9 +30,11 @@ public:
 	void MoveForwardBackward(float AxisValue);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-	FVector MouseIntersection;
-
+	UFUNCTION(BlueprintCallable)
 	bool IsDead();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void DestroyCharacter();
 private:
 	//
 	float Health;
@@ -44,5 +42,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxHealth = 100;
 
-	
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Player|Combat"))
+		UAnimMontage* HitAnimation;
+
+	UPROPERTY(EditDefaultsOnly, meta = (Category = "Player|Combat"))
+		UAnimMontage* DeathAnimation;
 };

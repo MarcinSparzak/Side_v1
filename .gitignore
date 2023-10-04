@@ -72,3 +72,10 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+Content/MAEOakForest/
+Content/Megascans/
+Content/ParagonCountess/
+Content/ParagonCrunch/
+Content/ParagonRampage/
+Content/ParagonTwinblast/

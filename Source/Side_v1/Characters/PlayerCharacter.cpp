@@ -6,14 +6,12 @@
 #include "../Camera/CameraManager.h"
 #include "Camera/CameraComponent.h"
 #include "BaseCharacterController.h"
-#include "../Props/Weapons/WeaponBase.h"
+#include "../Props/Weapons/GunBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	//SetGenericTeamId(FGenericTeamId(1));
 
 	/*
 		Set up Variables for character rotation 
@@ -25,6 +23,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SetMouseIntersection();
 	RotateCharacter();
 }
 
@@ -40,7 +39,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Attack()
 {
-	Weapon->Attack(MouseIntersection);
+	if (IsAiming)
+	{
+		if (shootRightGun)
+		{
+			RightHandWeapon->Attack(MouseIntersection);
+		}
+		else
+		{
+			LeftHandWeapon->Attack(MouseIntersection);
+		}
+	}
 }
 
 void APlayerCharacter::BeginPlay()
@@ -50,32 +59,47 @@ void APlayerCharacter::BeginPlay()
 	/*
 		Set up Variables for character rotation 
 	*/
-	PlayerController = Cast<ABaseCharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	CameraObj = Cast<UCameraComponent>(CameraManager->GetComponentByClass(UCameraComponent::StaticClass()));
-
-
-	/*
-		Equip Default weapon
-	*/
-	if (WeaponClass != nullptr)
+	APlayerController* TmpPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (TmpPlayerController != nullptr)
 	{
-		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-		if (Weapon != nullptr)
-		{
-			Weapon->SetOwner(this);
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
-		}
+		PlayerController = Cast<ABaseCharacterController>(TmpPlayerController);
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
+	if (CameraManager != nullptr)
+	{
+		CameraObj = Cast<UCameraComponent>(CameraManager->GetComponentByClass(UCameraComponent::StaticClass()));
+	}
 
-	}
+	SpawnWeapons();
+
+	FRotator tmpRot = GetActorRotation();
+	UE_LOG(LogTemp, Warning, TEXT("original rotation %s"), *tmpRot.ToString());
+}
+
+void APlayerCharacter::Death()
+{
+	UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter Death"));
+	ABaseCharacter::Death();
 }
 
 void APlayerCharacter::RotateCharacter()
+{
+	FVector CharacterLocation = GetActorLocation();
+
+
+	float tmpRotation;
+	
+	if (CharacterLocation.Y >= MouseIntersection.Y) {
+		tmpRotation = -90.0f;
+		DirectionY = -1;
+	}
+	else {
+		tmpRotation = 90.0f;
+		DirectionY = 1;
+	}
+	SetActorRotation(FRotator(0, tmpRotation, 0));
+}
+
+void APlayerCharacter::SetMouseIntersection()
 {
 	if (PlayerController == nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("Player Controller not found"));
@@ -104,8 +128,41 @@ void APlayerCharacter::RotateCharacter()
 
 	FVector CharacterLocation = GetActorLocation();
 	MouseIntersection = FMath::LinePlaneIntersection(CameraLocation, IntersectionLineEnd, CharacterLocation, FVector(1.0, 0.0, 0.0));
+}
 
+void APlayerCharacter::SpawnWeapons()
+{
+	if (RightWeaponClass != nullptr)
+	{
+		RightHandWeapon = GetWorld()->SpawnActor<AGunBase>(RightWeaponClass);
+		RightHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+		if (RightHandWeapon != nullptr)
+		{
+			RightHandWeapon->SetOwner(this);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
 
-	float tmpRotation = CharacterLocation.Y >= MouseIntersection.Y ? -90.0f : 90.0f;
-	SetActorRotation(FRotator(0, tmpRotation, 0));
+	}
+	
+	if (LeftWeaponClass != nullptr)
+	{
+		LeftHandWeapon = GetWorld()->SpawnActor<AGunBase>(LeftWeaponClass);
+		LeftHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+		if (LeftHandWeapon != nullptr)
+		{
+			LeftHandWeapon->SetOwner(this);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Weapon not created"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Weapon Class"));
+
+	}
 }

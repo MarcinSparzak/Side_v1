@@ -21,12 +21,10 @@ ACameraFollowTrigger::ACameraFollowTrigger()
 */
 void ACameraFollowTrigger::OverlapTriggerBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
-	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UpdateCameraManager"));
-		UpdateCameraManager(true, false, VectorForCameraToCenter->GetComponentLocation());
+		UpdateCameraManager(true, false);
 	}
 }
 
@@ -35,24 +33,21 @@ void ACameraFollowTrigger::OverlapTriggerBegin(AActor* OverlappedActor, AActor* 
 */
 void ACameraFollowTrigger::OverlapTriggerEnd(AActor* OverlappedActor, AActor* OtherActor)
 {
-	ABaseCharacter* MainCharacter = Cast<ABaseCharacter>(OtherActor);
+	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
-		FVector Point = FVector(0, 0, 0);
-		UpdateCameraManager(false, true, Point);
+		UpdateCameraManager(false, true);
 	}
 }
 
 /*
 * Funkcja przesy³aj¹ca do obiektu kamery informacje o koniecznoœci aktualizacji jej zachowania
 */
-void ACameraFollowTrigger::UpdateCameraManager(bool IsStationary, bool IsFollowingY, FVector VectorToCenter)
+void ACameraFollowTrigger::UpdateCameraManager(bool IsStationary, bool IsFollowingY)
 {
 	CameraManager->SetIsFollowingY(IsFollowingY);
-	if (IsCameraCentered)
-	{
-		CameraManager->SetCameraStationary(IsStationary, VectorForCameraToCenter->GetComponentLocation());
-	}
+
+	CameraManager->SetCameraStationary(IsStationary, VectorForCameraToCenter->GetComponentLocation());
 }
 
 
