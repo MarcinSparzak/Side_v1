@@ -17,7 +17,7 @@ EBTNodeResult::Type UBTTask_MoveToWithCustomRadius::ExecuteTask(UBehaviorTreeCom
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
 	if (Blackboard == nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Move To Failed"));
+		//UE_LOG(LogTemp, Warning, TEXT("Move To Failed"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -27,9 +27,7 @@ EBTNodeResult::Type UBTTask_MoveToWithCustomRadius::ExecuteTask(UBehaviorTreeCom
 
 	if (NodeResult == EBTNodeResult::Failed) {
 		FString ActorName = OwnerComp.GetOwner()->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("UBTTask_MoveToWithCustomRadius ::29"));
-		UE_LOG(LogTemp, Warning, TEXT("Actor name %s"), *ActorName);
-		UE_LOG(LogTemp, Warning, TEXT("Node Result %s"), *UEnum::GetValueAsString(NodeResult));
+		
 		Blackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), false);
 	}
 

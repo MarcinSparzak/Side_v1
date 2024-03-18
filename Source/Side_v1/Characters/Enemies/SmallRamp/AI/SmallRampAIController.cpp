@@ -17,18 +17,18 @@ void ASmallRampAIController::BeginPlay()
 	Super::BeginPlay();
 
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+	//UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 
 	EnemyCharacter = Cast<ASmallRampCharacter>(GetPawn());
 	if (EnemyCharacter == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Character Found"));
+		//UE_LOG(LogTemp, Warning, TEXT("No Character Found"));
 		return;
 	}
 
 	if (AIBehaviorTree != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RunBehaviorTree"));
+		//UE_LOG(LogTemp, Warning, TEXT("RunBehaviorTree"));
 		RunBehaviorTree(AIBehaviorTree);
 	}
 
@@ -37,7 +37,7 @@ void ASmallRampAIController::BeginPlay()
 
 	UAIPerceptionComponent* AIPerc = GetAIPerceptionComponent();
 	if (AIPerc != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Update Delegate"));
+		//UE_LOG(LogTemp, Warning, TEXT("Update Delegate"));
 		AIPerc->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &ASmallRampAIController::OnTargetPerceptionUpdatedDelegate);
 
 	}
@@ -69,12 +69,12 @@ void ASmallRampAIController::SetupBlackboard()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("SetupBlackboard"));
+	//UE_LOG(LogTemp, Warning, TEXT("SetupBlackboard"));
 	// Character has two weapons of the same BP, we only need one to set up data
 	AMeleeBase* Weapon = EnemyCharacter->GetRightHandWeapon();
 	if (Weapon != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Set Weapon Range"));
+		//UE_LOG(LogTemp, Warning, TEXT("Set Weapon Range"));
 		float WeaponRange = Weapon->GetWeaponRange();
 
 		AIBlackboard->SetValueAsFloat(TEXT("DistanceFromPlayer"), WeaponRange);
@@ -82,7 +82,7 @@ void ASmallRampAIController::SetupBlackboard()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Weapon Found"));
+		//UE_LOG(LogTemp, Warning, TEXT("No Weapon Found"));
 		AIBlackboard->SetValueAsFloat(TEXT("DistanceFromPlayer"), 100.0f);
 		AIBlackboard->SetValueAsFloat(TEXT("WeaponRange"), 0.0f);
 	}
@@ -102,25 +102,25 @@ void ASmallRampAIController::SetupBlackboard()
 
 void ASmallRampAIController::OnTargetPerceptionUpdatedDelegate(AActor* Actor, FAIStimulus Stimulus)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Perception Update"));
+	//UE_LOG(LogTemp, Warning, TEXT("Perception Update"));
 
 	APlayerCharacter* Target = Cast<APlayerCharacter>(Actor);
 	if (Target == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Target nullptr"));
+		//UE_LOG(LogTemp, Warning, TEXT("OnTargetPerceptionUpdatedDelegate: 110: Target nullptr"));
 		return;
 	}
 
 	UBlackboardComponent* AIBlackboard = GetBlackboardComponent();
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Target in sight"));
+		//UE_LOG(LogTemp, Warning, TEXT("Target sensed"));
 		AIBlackboard->SetValueAsVector(TEXT("PlayerLocation"), Actor->GetActorLocation());
 		AIBlackboard->SetValueAsObject(TEXT("Player"), Target);
 		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), true);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("Target out of sight"));
+		//UE_LOG(LogTemp, Warning, TEXT("Target not sensed"));
 		AIBlackboard->ClearValue(TEXT("PlayerLocation"));
 		AIBlackboard->ClearValue(TEXT("Player"));
 		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), false);
@@ -151,16 +151,16 @@ void ASmallRampAIController::UpdateSightRadius()
 	UAIPerceptionComponent* AIPerception = GetAIPerceptionComponent();
 	if (AIPerception != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AI perception found"));
+		//UE_LOG(LogTemp, Warning, TEXT("AI perception found"));
 		FAISenseID SenseId = UAISense::GetSenseID(UAISense_Sight::StaticClass());
 		UAISenseConfig* SenseConfig = AIPerception->GetSenseConfig(SenseId);
 		if (SenseConfig != nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Sight config found"));
+			//UE_LOG(LogTemp, Warning, TEXT("Sight config found"));
 			UAISenseConfig_Sight* ConfigSight = Cast<UAISenseConfig_Sight>(SenseConfig);
 			ConfigSight->SightRadius = EnemyCharacter->SightRadius;
 			ConfigSight->LoseSightRadius = EnemyCharacter->LoseSightRadius;
-			UE_LOG(LogTemp, Warning, TEXT("Sight Radius %f"), ConfigSight->SightRadius);
+			//UE_LOG(LogTemp, Warning, TEXT("Sight Radius %f"), ConfigSight->SightRadius);
 			AIPerception->RequestStimuliListenerUpdate();
 		}
 	}

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/TriggerBox.h"
 #include "CameraFollowTrigger.generated.h"
-class UBoxComponent; class ACameraManager;
+class UBoxComponent; class ACameraManager; class UCutsceneManager;
 /**
  * Area component.
  * After stepping into component camera strops following character and is centered at VectorForCameraToCenter
@@ -18,6 +18,12 @@ class SIDE_V1_API ACameraFollowTrigger : public ATriggerBox
 public:
 	ACameraFollowTrigger();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Cinematics")
+	void DebugEvent();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 private:
 
 	/*
@@ -41,4 +47,8 @@ private:
 	*/
 	void UpdateCameraManager(bool IsStationary, bool IsFollowingY);
 
+	UPROPERTY()
+	UCutsceneManager* CutsceneManager;
+
+	
 };

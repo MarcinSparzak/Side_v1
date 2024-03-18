@@ -29,7 +29,7 @@ void ASmallRampCharacter::BeginPlay()
 		if (RightHandWeapon != nullptr)
 		{
 			RightHandWeapon->SetOwner(this);
-			UE_LOG(LogTemp, Warning, TEXT("RightHandWeapon created"));
+			//UE_LOG(LogTemp, Warning, TEXT("RightHandWeapon created"));
 			SendWeaponDetailsToAI();
 		}
 		else {
@@ -41,7 +41,7 @@ void ASmallRampCharacter::BeginPlay()
 		if (LeftHandWeapon != nullptr)
 		{
 			LeftHandWeapon->SetOwner(this);
-			UE_LOG(LogTemp, Warning, TEXT("LeftHandWeapon created"));
+			//UE_LOG(LogTemp, Warning, TEXT("LeftHandWeapon created"));
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("LeftHandWeapon not created"));
@@ -111,21 +111,21 @@ void ASmallRampCharacter::OnAttackHitTarget(UPrimitiveComponent* OverlappedComp,
 {
 	if (isAttacking)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Function:DealDamage"));
+		//UE_LOG(LogTemp, Warning, TEXT("Function:DealDamage"));
 		FString ComponentName;
 		FString VictimName;
 		FString VictimComponentName;
 
 		// TODELETE
 		VictimName = OtherActor->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Victim Name: %s"), *VictimName);
+		//UE_LOG(LogTemp, Warning, TEXT("Victim Name: %s"), *VictimName);
 		// TODELETE END
 
 		APlayerCharacter* PlayerObj = Cast<APlayerCharacter>(OtherActor);
 		if (PlayerObj != nullptr)
 		{
 			FName SocketName = OverlappedComp->GetAttachSocketName();
-			UE_LOG(LogTemp, Warning, TEXT("Component Socket Name: %s"), *SocketName.ToString());
+			//UE_LOG(LogTemp, Warning, TEXT("Component Socket Name: %s"), *SocketName.ToString());
 		
 			// Calculate hit direction
 			FVector HitDirection = UKismetMathLibrary::GetDirectionUnitVector(GetActorLocation(), OtherActor->GetActorLocation());

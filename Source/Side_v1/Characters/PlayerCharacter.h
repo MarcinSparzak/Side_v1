@@ -56,6 +56,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		bool IsAiming;
 
+	// Check if input and stearing is enabled
+	UPROPERTY(BlueprintReadWrite)
+	bool IsInputEnabled = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

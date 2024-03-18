@@ -56,7 +56,7 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 {
 	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	
-	UE_LOG(LogTemp, Warning, TEXT("Actor takes damage: %f"), DamageToApply);
+	//UE_LOG(LogTemp, Warning, TEXT("Actor takes damage: %f"), DamageToApply);
 
 	float tmpHealth = Health;
 	float damageApplied = 0.0f;
@@ -73,11 +73,11 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 		if (EnemyController != nullptr)
 		{
 
-			UE_LOG(LogTemp, Warning, TEXT("Controller found"));
+			//UE_LOG(LogTemp, Warning, TEXT("Controller found"));
 			UBlackboardComponent* Blackboard = EnemyController->GetBlackboardComponent();
 			if (Blackboard != nullptr)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Blackboard found"));
+				//UE_LOG(LogTemp, Warning, TEXT("Blackboard found"));
 				Blackboard->SetValueAsBool(TEXT("IsHitted"), true);
 				APlayerCharacter* Target = Cast<APlayerCharacter>(DamageCauser);
 				if (Target == nullptr)
@@ -95,15 +95,15 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 		else if (HitAnimation != nullptr)
 		{
 
-			UE_LOG(LogTemp, Warning, TEXT("Play Hit Montage"));
+			//UE_LOG(LogTemp, Warning, TEXT("Play Hit Montage"));
 			USkeletalMeshComponent* CharacterMesh = GetMesh();
 			UAnimInstance* CharacterAnimBP = CharacterMesh->GetAnimInstance();
 			float testAnim = CharacterAnimBP->Montage_Play(HitAnimation);
-			UE_LOG(LogTemp, Warning, TEXT("Anim float: %f"), testAnim);
+			//UE_LOG(LogTemp, Warning, TEXT("Anim float: %f"), testAnim);
 		}
 		Health -= DamageToApply;
 		damageApplied = DamageToApply;
-		UE_LOG(LogTemp, Warning, TEXT("Actor life: %f"), Health);
+		//UE_LOG(LogTemp, Warning, TEXT("Actor life: %f"), Health);
 	}
 	return damageApplied;
 }
@@ -122,7 +122,7 @@ void ABaseCharacter::MoveForwardBackward(float AxisValue)
 
 void ABaseCharacter::Death()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Base Character Death"));
+	//UE_LOG(LogTemp, Warning, TEXT("Base Character Death"));
 	DetachFromControllerPendingDestroy();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);

@@ -72,7 +72,11 @@ private:
 	bool IsFollowingZ = true;
 	bool IsCameraStationary = false;
 	FVector LocationToCenter;
-	float CameraZValue = 250.0f;
+	
+	float DefaultCameraZValue = 250.0f;
+	float CameraZValue = 0;
+	UFUNCTION()
+		void SetCameraZValueBasedOnMousePosition();
 
 	UPROPERTY(EditAnywhere)
 		float CameraYOffest = 100.0f;

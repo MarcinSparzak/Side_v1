@@ -53,7 +53,7 @@ void AVerticalTransitionTrigger::OnTopOverlapBegin(UPrimitiveComponent* Overlapp
 	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Top Overlap"));
+		//UE_LOG(LogTemp, Warning, TEXT("Top Overlap"));
 		CameraManager->SetCameraZValue(TopZValue);
 		CameraManager->SetIsFollowingZ(false);
 	}
@@ -64,7 +64,7 @@ void AVerticalTransitionTrigger::OnMiddleOverlapBegin(UPrimitiveComponent* Overl
 	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Middle Overlap"));
+		//UE_LOG(LogTemp, Warning, TEXT("Middle Overlap"));
 		CameraManager->SetIsFollowingZ(true);
 	}
 }
@@ -74,7 +74,7 @@ void AVerticalTransitionTrigger::OnBottomOverlapBegin(UPrimitiveComponent* Overl
 	APlayerCharacter* MainCharacter = Cast<APlayerCharacter>(OtherActor);
 	if (MainCharacter != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bottom Overlap"));
+		//UE_LOG(LogTemp, Warning, TEXT("Bottom Overlap"));
 
 		CameraManager->SetCameraZValue(BottomZValue);
 		CameraManager->SetIsFollowingZ(false);

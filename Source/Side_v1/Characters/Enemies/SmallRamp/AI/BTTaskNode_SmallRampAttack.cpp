@@ -12,14 +12,16 @@ EBTNodeResult::Type UBTTaskNode_SmallRampAttack::ExecuteTask(UBehaviorTreeCompon
 	ASmallRampCharacter* OwnerActor = Cast<ASmallRampCharacter>(AIBlackboard->GetValueAsObject(TEXT("SelfActor")));
 
 	if (OwnerActor == nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Owner not found"));
+		//UE_LOG(LogTemp, Warning, TEXT("Owner not found"));
 		return EBTNodeResult::Failed;
 	}
-	FVector PlayerLocation = AIBlackboard->GetValueAsVector(TEXT("PlayerLocation"));
+	else {
+		FVector PlayerLocation = AIBlackboard->GetValueAsVector(TEXT("PlayerLocation"));
 
-	if (!PlayerLocation.IsZero()) {
-		OwnerActor->Attack(PlayerLocation);
+		if (!PlayerLocation.IsZero()) {
+			OwnerActor->Attack(PlayerLocation);
+		}
+
+		return EBTNodeResult::Succeeded;
 	}
-
-	return EBTNodeResult::Type();
 }

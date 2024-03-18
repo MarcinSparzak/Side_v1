@@ -23,8 +23,15 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetMouseIntersection();
-	RotateCharacter();
+	if (IsInputEnabled)
+	{
+		SetMouseIntersection();
+		RotateCharacter();
+	}
+	else {
+
+		SetActorRotation(FRotator(0, 90.0f, 0));
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -72,12 +79,12 @@ void APlayerCharacter::BeginPlay()
 	SpawnWeapons();
 
 	FRotator tmpRot = GetActorRotation();
-	UE_LOG(LogTemp, Warning, TEXT("original rotation %s"), *tmpRot.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("original rotation %s"), *tmpRot.ToString());
 }
 
 void APlayerCharacter::Death()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter Death"));
+	//UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter Death"));
 	ABaseCharacter::Death();
 }
 

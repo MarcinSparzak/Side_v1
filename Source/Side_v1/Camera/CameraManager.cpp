@@ -38,8 +38,8 @@ void ACameraManager::BeginPlay()
 	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	
 	FVector PlayerLoction = Player->GetActorLocation();
-	SpringArm->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z - 250));
-	Camera->SetWorldLocation(FVector(-1200, PlayerLoction.Y, PlayerLoction.Z - 250));
+	SpringArm->SetWorldLocation(FVector(-1700, PlayerLoction.Y, PlayerLoction.Z - 350));
+	Camera->SetWorldLocation(FVector(-1700, PlayerLoction.Y, PlayerLoction.Z - 250));
 
 
 	FTimerHandle DelayTimerHandle;
@@ -69,28 +69,83 @@ void ACameraManager::Tick(float DeltaTime)
 	}
 }
 
+// Depracted
 void ACameraManager::SetCameraZValue(float ZValue)
 {
 	FVector SpringArmVector = SpringArm->GetComponentLocation();
 	SpringArm->SetWorldLocation(FVector(SpringArmVector.X, SpringArmVector.Y, ZValue));
 }
 
+void ACameraManager::SetCameraZValueBasedOnMousePosition()
+{
+	// Check if object are set properly
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PlayerController == nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("Player Controller not found"));
+		return;
+	}
+
+	if (Camera == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Camera component not found"));
+		return;
+	}
+
+	FVector CameraLocation = Camera->GetComponentLocation();
+
+	// Get placement and rotaion of mouse cursor in world
+	FVector MouseWorldLocation;
+	FVector MouseRotation;
+	PlayerController->DeprojectMousePositionToWorld(MouseWorldLocation, MouseRotation);
+
+	// Create line from Mouse World Location towards players plane
+	FVector IntersectionLineEnd = MouseRotation * (SpringArmLength * 2) + MouseWorldLocation;
+
+	// Find a point of intersection between created line and players plane
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	FVector CharacterLocation = Player->GetActorLocation();
+	FVector MouseIntersection = FMath::LinePlaneIntersection(CameraLocation, IntersectionLineEnd, CharacterLocation, FVector(1.0, 0.0, 0.0));
+
+	// Set Z limits for mouse cursor between which camera does not change it's Z value
+	float playerMouseZDifference = CharacterLocation.Z - MouseIntersection.Z;
+	float UpperModifier = 100.0f;
+	float LowerModifier = -150.0f;
+	float mouseZLimit = 150.0f;
+	if (playerMouseZDifference >= mouseZLimit)
+	{
+		CameraZValue = LowerModifier;
+	}
+	else if (playerMouseZDifference <= -mouseZLimit)
+	{
+		CameraZValue = UpperModifier;
+	}
+	else {
+		CameraZValue = 0.0f;
+	}
+}
+
+/*
+	Called every frame to set locotion for camera oposing player character
+*/
 FVector ACameraManager::FollowPlayerMovement(float DeltaTime, APlayerCharacter* Player)
 {
 	FVector SpringArmLocation = SpringArm->GetComponentLocation();
 
+	// Change Camera Z value if player is looking up or down
+	SetCameraZValueBasedOnMousePosition();
+
 	// Vector on planes that we follow
-	FVector PlayerVector = (Player->GetActorLocation() + FVector(0, 0, CameraZValue)) * PlanesToFollow;
+	FVector PlayerVector = Player->GetActorLocation() * PlanesToFollow;
 	// Using YOffest so that camera is always ahead of character 
 	float YOffset = Player->DirectionY * CameraYOffest;
+	PlayerVector += FVector(0, YOffset, CameraZValue);
 
 	// Vector on planes that we don't follow
 	FVector SpringArmVector = (FVector(1, 1, 1) - PlanesToFollow) * SpringArmLocation;
-	SpringArmVector += FVector(0, YOffset, 0);
+	//SpringArmVector += FVector(0, YOffset, CameraZValue);
 
-
-	//UE_LOG(LogTemp, Warning, TEXT("TmpPlayerVector %s"), *PlayerVector.ToString());
 	FVector Result = FMath::VInterpTo(SpringArmLocation, PlayerVector + SpringArmVector, DeltaTime, InterpSpeed);
+
 	return Result;
 }
 
@@ -128,8 +183,8 @@ void ACameraManager::SetCameraStationary(bool NewValue, FVector PointToCenter)
 FVector ACameraManager::CenterCameraAtVector(float DeltaTime)
 {
 	FVector SpringArmLocation = SpringArm->GetComponentLocation();
-	FVector TmpVector = LocationToCenter * FVector(0, 1, 0);
-	FVector Result = FMath::VInterpTo(SpringArmLocation, FVector(SpringArmLocation.X, TmpVector.Y, SpringArmLocation.Z), DeltaTime, InterpSpeed);
+	FVector TmpVector = LocationToCenter * FVector(1, 1, 1);
+	FVector Result = FMath::VInterpTo(SpringArmLocation, FVector(TmpVector.X, TmpVector.Y, TmpVector.Z), DeltaTime, InterpSpeed);
 
 	return Result;
 }
@@ -143,4 +198,5 @@ void ACameraManager::DelayTimerCallback()
 {
 	SpringArm->bEnableCameraLag = true;
 }
+
 

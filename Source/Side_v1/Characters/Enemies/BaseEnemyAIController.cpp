@@ -16,18 +16,18 @@ void ABaseEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+	//UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 
 	EnemyCharacter = Cast<ABaseEnemyCharacter>(GetPawn());
 	if (EnemyCharacter == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Character Found"));
+		//UE_LOG(LogTemp, Warning, TEXT("No Character Found"));
 		return;
 	}
 
 	if (AIBehaviorTree != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RunBehaviorTree"));
+		//UE_LOG(LogTemp, Warning, TEXT("RunBehaviorTree"));
 		RunBehaviorTree(AIBehaviorTree);
 	}
 
@@ -36,7 +36,7 @@ void ABaseEnemyAIController::BeginPlay()
 
 	UAIPerceptionComponent* AIPerc = GetAIPerceptionComponent();
 	if (AIPerc != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Update Delegate"));
+		//UE_LOG(LogTemp, Warning, TEXT("Update Delegate"));
 		AIPerc->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &ABaseEnemyAIController::OnTargetPerceptionUpdatedDelegate);
 
 	}
@@ -99,25 +99,25 @@ void ABaseEnemyAIController::SetupBlackboard()
 
 void ABaseEnemyAIController::OnTargetPerceptionUpdatedDelegate(AActor* Actor, FAIStimulus Stimulus)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Perception Update"));
+	//UE_LOG(LogTemp, Warning, TEXT("Perception Update"));
 	
 	APlayerCharacter* Target = Cast<APlayerCharacter>(Actor);
 	if (Target == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Target nullptr"));
+		//UE_LOG(LogTemp, Warning, TEXT("Target nullptr"));
 		return;
 	}
 
 	UBlackboardComponent* AIBlackboard = GetBlackboardComponent();
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Target in sight"));
+		//UE_LOG(LogTemp, Warning, TEXT("Target in sight"));
 		AIBlackboard->SetValueAsVector(TEXT("PlayerLocation"), Actor->GetActorLocation());
 		AIBlackboard->SetValueAsObject(TEXT("Player"), Target);
 		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), true);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("Target out of sight"));
+		//UE_LOG(LogTemp, Warning, TEXT("Target out of sight"));
 		AIBlackboard->ClearValue(TEXT("PlayerLocation"));
 		AIBlackboard->ClearValue(TEXT("Player"));
 		AIBlackboard->SetValueAsBool(TEXT("IsMoveToPlayerPossible"), false);
@@ -132,8 +132,8 @@ void ABaseEnemyAIController::SetupAIPerception()
 	AISenseConfigSight->DetectionByAffiliation.bDetectFriendlies = false;
 	AISenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;
 	AISenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;
-	AISenseConfigSight->SightRadius = 2500.0f;
-	AISenseConfigSight->LoseSightRadius = 3000.0f;
+	AISenseConfigSight->SightRadius = 4000.0f;
+	AISenseConfigSight->LoseSightRadius = 3500.0f;
 
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
 	//AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseEnemyAIController::OnTargetPerceptionUpdatedDelegate);
@@ -147,16 +147,16 @@ void ABaseEnemyAIController::UpdateSightRadius()
 	UAIPerceptionComponent* AIPerception = GetAIPerceptionComponent();
 	if (AIPerception != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AI perception found"));
+		//UE_LOG(LogTemp, Warning, TEXT("AI perception found"));
 		FAISenseID SenseId = UAISense::GetSenseID(UAISense_Sight::StaticClass());
 		UAISenseConfig* SenseConfig = AIPerception->GetSenseConfig(SenseId);
 		if (SenseConfig != nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Sight config found"));
+			//UE_LOG(LogTemp, Warning, TEXT("Sight config found"));
 			UAISenseConfig_Sight* ConfigSight = Cast<UAISenseConfig_Sight>(SenseConfig);
 			ConfigSight->SightRadius = EnemyCharacter->SightRadius;
 			ConfigSight->LoseSightRadius = EnemyCharacter->LoseSightRadius;
-			UE_LOG(LogTemp, Warning, TEXT("Sight Radius %f"), ConfigSight->SightRadius);
+			//UE_LOG(LogTemp, Warning, TEXT("Sight Radius %f"), ConfigSight->SightRadius);
 			AIPerception->RequestStimuliListenerUpdate();
 		}
 	}
@@ -170,7 +170,7 @@ void ABaseEnemyAIController::UpdateCharacterWeaponAI(float WeaponRange)
 	{
 		UBlackboardComponent* AIBlackboard = GetBlackboardComponent();
 
-		UE_LOG(LogTemp, Warning, TEXT("Set Weapon Range"));
+		//UE_LOG(LogTemp, Warning, TEXT("Set Weapon Range"));
 
 		AIBlackboard->SetValueAsFloat(TEXT("DistanceFromPlayer"), WeaponRange - 100.0f);
 		AIBlackboard->SetValueAsFloat(TEXT("WeaponRange"), WeaponRange);

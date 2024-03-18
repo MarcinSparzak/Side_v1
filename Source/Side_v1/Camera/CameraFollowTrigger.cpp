@@ -4,6 +4,7 @@
 #include "CameraFollowTrigger.h"
 #include "Components/BoxComponent.h"
 #include "../Characters/BaseCharacter.h"
+#include "CutsceneManager.h"
 #include "CameraManager.h"
 
 ACameraFollowTrigger::ACameraFollowTrigger()
@@ -14,6 +15,17 @@ ACameraFollowTrigger::ACameraFollowTrigger()
 
 	VectorForCameraToCenter = CreateDefaultSubobject<USceneComponent>("Vector For Camera to Center");
 	VectorForCameraToCenter->SetupAttachment(RootComponent);
+
+	//CutsceneManager = CreateDefaultSubobject<UCutsceneManager>("Cutscene Manager");
+	//AddOwnedComponent(CutsceneManager);
+}
+
+// Called when the game starts or when spawned
+void ACameraFollowTrigger::BeginPlay()
+{
+	Super::BeginPlay();
+	CutsceneManager = GetComponentByClass<UCutsceneManager>();
+
 }
 
 /*
@@ -25,6 +37,14 @@ void ACameraFollowTrigger::OverlapTriggerBegin(AActor* OverlappedActor, AActor* 
 	if (MainCharacter != nullptr)
 	{
 		UpdateCameraManager(true, false);
+		if (CutsceneManager == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Cutscene"));
+		}
+		else
+		{
+			CutsceneManager->StartCutscene();
+		}
 	}
 }
 
